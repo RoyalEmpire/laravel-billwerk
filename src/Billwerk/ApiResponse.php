@@ -2,7 +2,9 @@
 
 namespace Lefamed\LaravelBillwerk\Billwerk;
 
+use Exception;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Collection;
 
 /**
  * Class ApiResponse
@@ -22,12 +24,12 @@ class ApiResponse
 	 * ApiResponse constructor.
 	 *
 	 * @param Response $response
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function __construct(Response $response)
 	{
 		if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
-			throw new \Exception('API request failed with status code ' . $response->getStatusCode() . '.');
+			throw new Exception('API request failed with status code ' . $response->getStatusCode() . '.');
 		}
 
 		$this->response = $response;
@@ -47,7 +49,7 @@ class ApiResponse
 	/**
 	 * Gets all records.
 	 *
-	 * @return \Illuminate\Support\Collection
+	 * @return Collection
 	 */
 	public function data()
 	{

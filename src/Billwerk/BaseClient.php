@@ -2,7 +2,10 @@
 
 namespace Lefamed\LaravelBillwerk\Billwerk;
 
+use Exception;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Class BaseClient
@@ -14,7 +17,7 @@ use GuzzleHttp\Client;
 abstract class BaseClient
 {
 	/**
-	 * @var \GuzzleHttp\Client
+	 * @var Client
 	 */
 	protected $httpClient;
 
@@ -36,9 +39,10 @@ abstract class BaseClient
 
 	protected $accessToken = null;
 
-	/**
-	 * Client constructor.
-	 */
+    /**
+     * Client constructor.
+     * @throws Exception
+     */
 	public function __construct()
 	{
 		$this->httpClient = new Client();
@@ -46,9 +50,10 @@ abstract class BaseClient
 		$this->baseUrl = config('laravel-billwerk.api.baseUrl');
 		$this->authUrl = config('laravel-billwerk.api.authUrl');
 
-		if (\Cache::has(config('laravel-billwerk.auth.token_cache_key'))) {
-			$this->accessToken = \Cache::get(config('laravel-billwerk.auth.token_cache_key'));
+		if (Cache::has(config('laravel-billwerk.auth.token_cache_key'))) {
+			$this->accessToken = Cache::get(config('laravel-billwerk.auth.token_cache_key'));
 		}
+
 		if (is_null($this->accessToken)) {
 			$this->requestAccessToken();
 		}
@@ -57,11 +62,11 @@ abstract class BaseClient
 	/**
 	 * Request an access token on billwerk api
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	protected function requestAccessToken()
 	{
-		//prepare the oAuth2 call
+		// prepare the oAuth2 call
 		$res = $this->httpClient->post($this->authUrl, [
 			'form_params' => [
 				'grant_type' => 'client_credentials',
@@ -73,19 +78,13 @@ abstract class BaseClient
 		if ($res->getStatusCode() === 200) {
 			//store access token on cache
 			$body = json_decode($res->getBody());
-			\Cache::put(config('laravel-billwerk.auth.token_cache_key'), $body->access_token, 60 * 24);
+			Cache::put(config('laravel-billwerk.auth.token_cache_key'), $body->access_token, 60 * 24);
 			$this->accessToken = $body->access_token;
 		} else {
-			\Log::error($res->getBody());
-			throw new \Exception('Billwerk auth error - '.$res->getStatusCode());
+			Log::error($res->getBody());
+			throw new Exception('Billwerk auth error - '.$res->getStatusCode());
 		}
 	}
-
-	/**
-	 * @param $data
-	 * @return array
-	 */
-	//abstract public function mutateModel($data);
 
 	/**
 	 * Builds the request options, including e.g. auth information.
@@ -101,11 +100,12 @@ abstract class BaseClient
 		];
 	}
 
-	/**
-	 * @param null $id Resource ID
-	 * @param null $action
-	 * @return ApiResponse
-	 */
+    /**
+     * @param null $id Resource ID
+     * @param null $action
+     * @return ApiResponse
+     * @throws Exception
+     */
 	public function get($id = null, $action = null)
 	{
 		if (null !== $id) {
@@ -118,12 +118,13 @@ abstract class BaseClient
 		return new ApiResponse($this->httpClient->get($route, $this->buildOptions()));
 	}
 
-	/**
-	 * @param $payload
-	 * @param null $resource
-	 * @param null $action
-	 * @return \Lefamed\LaravelBillwerk\Billwerk\ApiResponse
-	 */
+    /**
+     * @param $payload
+     * @param null $resource
+     * @param null $action
+     * @return ApiResponse
+     * @throws Exception
+     */
 	public function post($payload, $resource = null, $action = null)
 	{
 		$route = $this->baseUrl.($resource ?? $this->resource).($action !== null ? '/'.$action : '');
@@ -135,12 +136,13 @@ abstract class BaseClient
 		return new ApiResponse($this->httpClient->post($route, $options));
 	}
 
-	/**
-	 * @param $id
-	 * @param $payload
-	 * @param null $action
-	 * @return \Lefamed\LaravelBillwerk\Billwerk\ApiResponse
-	 */
+    /**
+     * @param $id
+     * @param $payload
+     * @param null $action
+     * @return ApiResponse
+     * @throws Exception
+     */
 	public function put($id, $payload, $action = null)
 	{
 		$route = $this->baseUrl.$this->resource.'/'.$id.($action !== null ? '/'.$action : '');
@@ -152,10 +154,11 @@ abstract class BaseClient
 		return new ApiResponse($this->httpClient->put($route, $options));
 	}
 
-	/**
-	 * @param $id
-	 * @return ApiResponse
-	 */
+    /**
+     * @param $id
+     * @return ApiResponse
+     * @throws Exception
+     */
 	public function delete($id)
 	{
 		$route = $this->baseUrl.$this->resource.'/'.$id;

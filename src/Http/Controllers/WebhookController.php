@@ -4,12 +4,12 @@ namespace Lefamed\LaravelBillwerk\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Lefamed\LaravelBillwerk\Events\RecurringBillingApproaching;
-use Lefamed\LaravelBillwerk\Jobs\Webhooks\ContractCancelled;
+use Lefamed\LaravelBillwerk\Jobs\Webhooks\OrderSucceeded;
 use Lefamed\LaravelBillwerk\Jobs\Webhooks\ContractChanged;
 use Lefamed\LaravelBillwerk\Jobs\Webhooks\ContractCreated;
 use Lefamed\LaravelBillwerk\Jobs\Webhooks\CustomerChanged;
-use Lefamed\LaravelBillwerk\Jobs\Webhooks\OrderSucceeded;
+use Lefamed\LaravelBillwerk\Jobs\Webhooks\ContractCancelled;
+use Lefamed\LaravelBillwerk\Events\RecurringBillingApproaching;
 
 /**
  * Class WebhookController
@@ -22,12 +22,10 @@ class WebhookController extends Controller
 	 */
 	public function handle(Request $request): Response
 	{
-		//only allow json body
 		if (!$request->isJson()) {
-			abort(406, 'Please provide JSON body!');
+			abort(Response::HTTP_NOT_ACCEPTABLE, 'Please provide JSON body!');
 		}
 
-		//handle all the different events
 		$content = json_decode($request->getContent());
 		switch ($content->Event) {
 			case 'CustomerChanged':
@@ -50,6 +48,6 @@ class WebhookController extends Controller
 				break;
 		}
 
-		return response('', 202);
+		return response('', Response::HTTP_ACCEPTED);
 	}
 }

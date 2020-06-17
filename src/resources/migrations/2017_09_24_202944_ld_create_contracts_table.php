@@ -16,17 +16,18 @@ class LdCreateContractsTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('lefamed_billwerk_contracts', function (Blueprint $table) {
+		Schema::create('billwerk_contracts', function (Blueprint $table) {
 			$table->string('id', 24)->primary();
+            $table->timestamps();
+
 			$table->unsignedInteger('customer_id');
 			$table->string('plan_id', 24);
-
+            $table->string('reference_code', 9)->unique();
 			$table->dateTime('end_date')->nullable();
-			$table->timestamps();
 
 			$table->foreign('customer_id')
 				->references('id')
-				->on('lefamed_billwerk_customers')
+				->on('billwerk_customers')
 				->onDelete('CASCADE');
 		});
 	}
@@ -38,6 +39,6 @@ class LdCreateContractsTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('lefamed_billwerk_contracts');
+		Schema::dropIfExists('billwerk_contracts');
 	}
 }

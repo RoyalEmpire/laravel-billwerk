@@ -2,6 +2,7 @@
 
 namespace Lefamed\LaravelBillwerk\Billwerk;
 
+use Exception;
 use Carbon\Carbon;
 
 /**
@@ -13,21 +14,32 @@ class Contract extends BaseClient
 {
 	protected $resource = 'Contracts';
 
-	/**
-	 * @param $contractId
-	 * @return ApiResponse
-	 */
+    /**
+     * @param $contractId
+     * @return ApiResponse
+     * @throws Exception
+     */
 	public function selfServiceToken($contractId): ApiResponse
 	{
 		return $this->get($contractId, 'SelfServiceToken');
 	}
 
-	public function subscriptions($contractId): ApiResponse
+    /**
+     * @param $contractId
+     * @return ApiResponse
+     * @throws Exception
+     */
+    public function subscriptions($contractId): ApiResponse
 	{
 		return $this->get($contractId, 'ComponentSubscriptions');
 	}
 
-	public function endComponentSubscription($subscriptionId): ApiResponse
+    /**
+     * @param $subscriptionId
+     * @return ApiResponse
+     * @throws Exception
+     */
+    public function endComponentSubscription($subscriptionId): ApiResponse
 	{
 		$route = $this->baseUrl.'ComponentSubscriptions/'.$subscriptionId;
 		$options = $this->buildOptions();
@@ -41,12 +53,13 @@ class Contract extends BaseClient
 		return new ApiResponse($this->httpClient->put($route, $options));
 	}
 
-	/**
-	 * @param $contractId
-	 * @param $componentId
-	 * @param $quantity
-	 * @return \Lefamed\LaravelBillwerk\Billwerk\ApiResponse
-	 */
+    /**
+     * @param $contractId
+     * @param $componentId
+     * @param $quantity
+     * @return ApiResponse
+     * @throws Exception
+     */
 	public function reportComponentSubscription($contractId, $componentId, $quantity): ApiResponse
 	{
 		return $this->post([

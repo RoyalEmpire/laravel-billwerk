@@ -2,21 +2,20 @@
 
 namespace Lefamed\LaravelBillwerk\Transformers\Model;
 
-use League\Fractal\TransformerAbstract;
-use Lefamed\LaravelBillwerk\Models\Customer;
+use Lefamed\LaravelBillwerk\Models\BillwerkCustomer;
 
 /**
  * Class CustomerTransformer
  *
  * @package Lefamed\LaravelBillwerk\Transformers\Billwerk
  */
-class CustomerTransformer extends TransformerAbstract
+class CustomerTransformer
 {
 	/**
-	 * @param Customer $customer
+	 * @param BillwerkCustomer $customer
 	 * @return array
 	 */
-	public function transform(Customer $customer)
+	public function transform(BillwerkCustomer $customer)
 	{
 		return [
 			'CompanyName' => $customer->company_name,

@@ -7,7 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Lefamed\LaravelBillwerk\Models\Customer;
+use Lefamed\LaravelBillwerk\Models\BillwerkCustomer;
 use Lefamed\LaravelBillwerk\Transformers\Model\CustomerTransformer;
 
 /**
@@ -18,15 +18,15 @@ class SyncBillwerkCustomer implements ShouldQueue
 {
 	use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 	/**
-	 * @var Customer
+	 * @var BillwerkCustomer
 	 */
 	private $customer;
 
 	/**
 	 * Create a new job instance.
-	 * @param Customer $customer
+	 * @param BillwerkCustomer $customer
 	 */
-	public function __construct(Customer $customer)
+	public function __construct(BillwerkCustomer $customer)
 	{
 		$this->customer = $customer;
 	}
@@ -41,9 +41,7 @@ class SyncBillwerkCustomer implements ShouldQueue
 		$customerClient = new \Lefamed\LaravelBillwerk\Billwerk\Customer();
 		$customerClient->put(
 			$this->customer->billwerk_id,
-			fractal($this->customer)
-				->transformWith(new CustomerTransformer())
-				->toArray()['data']
+            (new CustomerTransformer())->transform($this->customer)
 		);
 	}
 }

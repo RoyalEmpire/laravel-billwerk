@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Model;
  * Class Contract
  * @package Lefamed\LaravelBillwerk\Models
  */
-class Contract extends Model
+class BillwerkContract extends Model
 {
-	protected $table = 'lefamed_billwerk_contracts';
 	public $incrementing = false;
+
 	protected $fillable = [
 		'id',
 		'customer_id',
@@ -25,7 +25,6 @@ class Contract extends Model
 	 */
 	public function customer()
 	{
-		return $this->belongsTo(Customer::class);
+		return $this->belongsTo(BillwerkCustomer::class);
 	}
-
 }
