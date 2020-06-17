@@ -5,7 +5,7 @@ namespace Lefamed\LaravelBillwerk\Events;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Lefamed\LaravelBillwerk\Models\Contract;
+use Lefamed\LaravelBillwerk\Models\BillwerkContract;
 
 /**
  * Class UpOrDowngrade
@@ -21,9 +21,9 @@ class UpOrDowngrade
 	/**
 	 * Create a new event instance.
 	 *
-	 * @param \Lefamed\LaravelBillwerk\Models\Contract $contract
+	 * @param BillwerkContract $contract
 	 */
-	public function __construct(Contract $contract)
+	public function __construct(BillwerkContract $contract)
 	{
 		$this->contract = $contract;
 	}

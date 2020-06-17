@@ -2,11 +2,11 @@
 
 namespace Lefamed\LaravelBillwerk\Http\Controllers\Api;
 
-use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+use Exception;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 use Lefamed\LaravelBillwerk\Billwerk\Contract;
-use Lefamed\LaravelBillwerk\Billwerk\Order;
 use Lefamed\LaravelBillwerk\Http\Controllers\Controller;
 
 /**
@@ -15,35 +15,31 @@ use Lefamed\LaravelBillwerk\Http\Controllers\Controller;
  */
 class ContractController extends Controller
 {
-	/**
-	 * @param $contractId
-	 * @param Request $request
-	 * @return \Illuminate\Http\JsonResponse
-	 */
-	public function getSelfServiceToken($contractId, Request $request)
+    /**
+     * @param $contractId
+     * @return JsonResponse
+     * @throws Exception
+     */
+	public function getSelfServiceToken($contractId)
 	{
 		$cacheKey = 'billwerk_contract_' . $contractId . '_token';
-		$res = [];
 
-		if (\Cache::has($cacheKey)) {
-			$res = \Cache::get($cacheKey);
-		} else {
-			$contractService = new Contract();
-			try {
-				$tokenData = $contractService->selfServiceToken($contractId)->data();
-
-				$expiry = Carbon::parse($tokenData->Expiry);
-				$tokenExpireIn = $expiry->diffInMinutes(Carbon::now()) - 60;
-
-				\Cache::put($cacheKey, $tokenData, $tokenExpireIn);
-
-				$res = $tokenData;
-			} catch (\Exception $e) {
-				Bugsnag::notifyException($e);
-				abort(500, 'Error while fetching token from API');
-			}
+		if (Cache::has($cacheKey)) {
+            return response()->json(Cache::get($cacheKey));
 		}
 
-		return response()->json($res);
+        $contractService = new Contract();
+
+        try {
+            $tokenData = $contractService->selfServiceToken($contractId)->data();
+            $expiry = Carbon::parse($tokenData->Expiry);
+            $tokenExpireIn = $expiry->diffInMinutes(Carbon::now()) - 60;
+            Cache::put($cacheKey, $tokenData, $tokenExpireIn);
+            $res = $tokenData;
+        } catch (Exception $e) {
+            throw new Exception('Error while fetching token from API');
+        }
+
+		return response()->json($res ?? []);
 	}
 }

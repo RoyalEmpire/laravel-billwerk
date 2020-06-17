@@ -8,7 +8,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Lefamed\LaravelBillwerk\Models\Customer;
+use Lefamed\LaravelBillwerk\Models\BillwerkCustomer;
 
 /**
  * Class Signup
@@ -36,6 +36,6 @@ class DoBillwerkSignup implements ShouldQueue
 	 */
 	public function handle()
 	{
-		Customer::create($this->model->getCustomerTransformation());
+		BillwerkCustomer::create($this->model->getCustomerTransformation());
 	}
 }

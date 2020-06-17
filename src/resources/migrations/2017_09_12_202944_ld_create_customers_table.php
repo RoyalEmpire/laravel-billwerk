@@ -16,8 +16,8 @@ class LdCreateCustomersTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('lefamed_billwerk_customers', function (Blueprint $table) {
-			$table->increments('id');
+		Schema::create('billwerk_customers', function (Blueprint $table) {
+			$table->id();
 			$table->string('billwerk_id', 24)->unique();
 			$table->unsignedInteger('billable_id')->index();
 
@@ -49,6 +49,6 @@ class LdCreateCustomersTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('lefamed_billwerk_customers');
+		Schema::dropIfExists('billwerk_customers');
 	}
 }

@@ -1,9 +1,13 @@
 {
-    "name": "lefamed/laravel-billwerk",
+    "name": "apicore-engineering/laravel-billwerk",
     "authors": [
         {
             "name": "Oliver Brunsmann",
             "email": "brunsmann@lefamed.de"
+        },
+        {
+            "name": "Bence Gazder",
+            "email": "bence.gazder@apicore.de"
         }
     ],
 	"autoload": {
@@ -12,9 +16,8 @@
 		}
 	},
     "require": {
+        "php": "^7.2",
         "guzzlehttp/guzzle": "^6.3",
-        "spatie/laravel-fractal": "^5.1",
-        "kris/laravel-form-builder": "^1.12",
-        "laravel/framework": "^5.5"
+        "laravel/framework": "^6.0|^7.0"
     }
 }

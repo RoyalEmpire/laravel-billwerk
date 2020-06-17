@@ -2,17 +2,14 @@
 
 namespace Lefamed\LaravelBillwerk\Jobs\Webhooks;
 
-use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Log;
-use Lefamed\LaravelBillwerk\Billwerk\Contract;
 use Lefamed\LaravelBillwerk\Billwerk\Order;
-use Lefamed\LaravelBillwerk\Models\Customer;
+use Lefamed\LaravelBillwerk\Models\BillwerkCustomer;
 
 /**
  * Class OrderSucceeded
@@ -56,17 +53,10 @@ class OrderSucceeded implements ShouldQueue
 	{
 		try {
 			$orderClient = new Order();
-
-			//get order details
 			$order = $orderClient->get($this->orderId)->data();
-
-			//search the customer
-			$customer = Customer::byBillwerkId($order->CustomerId)->first();
-
+			$customer = BillwerkCustomer::byBillwerkId($order->CustomerId)->first();
 			event(new \Lefamed\LaravelBillwerk\Events\OrderSucceeded($customer, $order));
 		} catch (\Exception $e) {
-			dump($e);
-			Bugsnag::notifyException($e);
 			Log::error($e->getMessage());
 		}
 	}

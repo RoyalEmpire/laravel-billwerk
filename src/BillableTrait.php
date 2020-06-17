@@ -5,8 +5,8 @@ namespace Lefamed\LaravelBillwerk;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Lefamed\LaravelBillwerk\Jobs\DoBillwerkSignup;
-use Lefamed\LaravelBillwerk\Models\Contract;
-use Lefamed\LaravelBillwerk\Models\Customer;
+use Lefamed\LaravelBillwerk\Models\BillwerkContract;
+use Lefamed\LaravelBillwerk\Models\BillwerkCustomer;
 
 /**
  * Trait Billable
@@ -28,9 +28,9 @@ trait BillableTrait
 	}
 
 	/**
-	 * @return Customer
+	 * @return BillwerkCustomer
 	 */
-	public function getCustomer(): Customer
+	public function getCustomer(): BillwerkCustomer
 	{
 		return $this->customer;
 	}
@@ -40,7 +40,7 @@ trait BillableTrait
 	 */
 	public function customer()
 	{
-		return $this->hasOne(Customer::class, 'billable_id');
+		return $this->hasOne(BillwerkCustomer::class, 'billable_id');
 	}
 
 	public function hasContract($planIds): bool
