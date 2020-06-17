@@ -2,15 +2,10 @@
 
 namespace Lefamed\LaravelBillwerk\Events;
 
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Lefamed\LaravelBillwerk\Models\Contract;
-use Lefamed\LaravelBillwerk\Models\Customer;
+use Lefamed\LaravelBillwerk\Models\BillwerkCustomer;
 
 /**
  * Class OrderSucceeded
@@ -22,16 +17,18 @@ class OrderSucceeded
 	use Dispatchable, InteractsWithSockets, SerializesModels;
 
 	/**
-	 * @var \Lefamed\LaravelBillwerk\Models\Customer
+	 * @var \Lefamed\LaravelBillwerk\Models\BillwerkCustomer
 	 */
 	public $customer;
 
 	public $order;
 
-	/**
-	 * Create a new event instance.
-	 */
-	public function __construct(Customer $customer, $order)
+    /**
+     * Create a new event instance.
+     * @param BillwerkCustomer $customer
+     * @param $order
+     */
+	public function __construct(BillwerkCustomer $customer, $order)
 	{
 		$this->customer = $customer;
 		$this->order = $order;

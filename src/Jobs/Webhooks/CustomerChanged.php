@@ -2,14 +2,14 @@
 
 namespace Lefamed\LaravelBillwerk\Jobs\Webhooks;
 
-use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Lefamed\LaravelBillwerk\Billwerk\Customer;
-use Lefamed\LaravelBillwerk\Transformers\Billwerk\CustomerTransformer;
+use Lefamed\LaravelBillwerk\Models\BillwerkCustomer;
 
 class CustomerChanged implements ShouldQueue
 {
@@ -26,25 +26,32 @@ class CustomerChanged implements ShouldQueue
 		$this->customerId = $customerId;
 	}
 
-	/**
-	 * Execute the job.
-	 *
-	 * @return void
-	 */
+    /**
+     * Execute the job.
+     *
+     * @return void
+     * @throws Exception
+     */
 	public function handle()
 	{
 		$customerClient = new Customer();
+        $customer = $customerClient->get($this->customerId)->data();
 
-		try {
-			//fetch remote customer data
-			$res = $customerClient->get($this->customerId);
-			$data = fractal($res->data())
-				->transformWith(new CustomerTransformer())
-				->toArray()['data'];
-
-			\Lefamed\LaravelBillwerk\Models\Customer::where('billwerk_id', $this->customerId)->update($data);
-		} catch (\Exception $e) {
-			Bugsnag::notifyException($e);
-		}
+        BillwerkCustomer::where('billwerk_id', $this->customerId)->update([
+            'customer_name' => $customer->CustomerName,
+            'customer_sub_name' => $customer->CustomerSubName,
+            'company_name' => $customer->CompanyName ?? '',
+            'first_name' => $customer->FirstName ?? '',
+            'last_name' => $customer->LastName ?? '',
+            'language' => $customer->Language,
+            'vat_id' => $customer->VatId ?? '',
+            'email_address' => $customer->EmailAddress,
+            'notes' => $customer->Notes ?? '',
+            'street' => $customer->Address->Street ?? '',
+            'house_number' => $customer->Address->HouseNumber ?? '',
+            'postal_code' => $customer->Address->PostalCode ?? '',
+            'city' => $customer->Address->City ?? '',
+            'country' => $customer->Address->Country ?? ''
+        ]);
 	}
 }

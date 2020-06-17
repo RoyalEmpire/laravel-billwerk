@@ -2,9 +2,12 @@
 
 namespace Lefamed\LaravelBillwerk\Models;
 
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Builder;
+use Lefamed\LaravelBillwerk\Billwerk\Customer;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lefamed\LaravelBillwerk\Jobs\SyncBillwerkCustomer;
 use Lefamed\LaravelBillwerk\Transformers\Model\CustomerTransformer;
 
@@ -12,11 +15,9 @@ use Lefamed\LaravelBillwerk\Transformers\Model\CustomerTransformer;
  * Class Customer
  * @package Lefamed\LaravelBillwerk\Models
  */
-class Customer extends Model
+class BillwerkCustomer extends Model
 {
 	use Notifiable;
-
-	protected $table = 'lefamed_billwerk_customers';
 
 	protected $fillable = [
 		'billable_id',
@@ -62,34 +63,31 @@ class Customer extends Model
 	}
 
 	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 * @return HasMany
 	 */
 	public function contracts()
 	{
-		return $this->hasMany(Contract::class);
+		return $this->hasMany(BillwerkContract::class);
 	}
 
 	protected static function boot()
 	{
-		// -- On Create Event -- //
+		// On Create Event
 		static::creating(function ($values) {
-			if(env('BILLWERK_SYNC_DISABLED', false) === true) {
-				$values['billwerk_id'] = str_random(24);
+			if(config('laravel-billwerk.sync') === false) {
+				$values['billwerk_id'] = Str::random(24);
 
 				return;
 			}
 
-			$customerClient = new \Lefamed\LaravelBillwerk\Billwerk\Customer();
-			$data = fractal($values)
-				->transformWith(new CustomerTransformer())
-				->toArray();
-			$res = $customerClient->post($data['data'])->data();
+			$customerClient = new Customer();
+			$res = $customerClient->post((new CustomerTransformer())->transform($values))->data();
 			$values['billwerk_id'] = $res->Id;
 		});
 
-		// -- On Update Event -- //
-		static::updated(function (Customer $customer) {
-			if(env('BILLWERK_SYNC_DISABLED', false) === true) {
+		// On Update Event
+		static::updated(function (BillwerkCustomer $customer) {
+			if(config('laravel-billwerk.sync') === false) {
 				return;
 			}
 

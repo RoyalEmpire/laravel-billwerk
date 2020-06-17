@@ -12,5 +12,9 @@ return [
 		'token_cache_key' => 'laravel_billwerk_access_token',
 
 		'public_key' => env('BILLWERK_PUBLIC_KEY')
-	]
+	],
+
+    'sync' => env('BILLWERK_SYNC', true),
+
+    'middleware' => ['api'],
 ];

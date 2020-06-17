@@ -2,6 +2,8 @@
 
 namespace Lefamed\LaravelBillwerk\Billwerk;
 
+use Exception;
+
 /**
  * Class Order
  *
@@ -11,7 +13,14 @@ class Order extends BaseClient
 {
 	protected $resource = 'Orders';
 
-	public function preview($customerId, $planVariantId, $couponCode = null)
+    /**
+     * @param $customerId
+     * @param $planVariantId
+     * @param null $couponCode
+     * @return ApiResponse
+     * @throws Exception
+     */
+    public function preview($customerId, $planVariantId, $couponCode = null)
 	{
 		return $this->post([
 			'CustomerId' => $customerId,
@@ -22,11 +31,12 @@ class Order extends BaseClient
 		], $this->resource.'/Preview');
 	}
 
-	/**
-	 * @param $customerId
-	 * @param $planVariantId
-	 * @return ApiResponse
-	 */
+    /**
+     * @param $customerId
+     * @param $planVariantId
+     * @return ApiResponse
+     * @throws Exception
+     */
 	public function orderForExistingCustomer($customerId, $planVariantId)
 	{
 		return $this->post([
@@ -37,11 +47,12 @@ class Order extends BaseClient
 		]);
 	}
 
-	/**
-	 * @param $contractId
-	 * @param $planVariantId
-	 * @return \Lefamed\LaravelBillwerk\Billwerk\ApiResponse
-	 */
+    /**
+     * @param $contractId
+     * @param $planVariantId
+     * @return ApiResponse
+     * @throws Exception
+     */
 	public function upgrade($contractId, $planVariantId)
 	{
 		return $this->post([
@@ -54,11 +65,12 @@ class Order extends BaseClient
 		]);
 	}
 
-	/**
-	 * @param $orderId
-	 * @param array $payload
-	 * @return \Lefamed\LaravelBillwerk\Billwerk\ApiResponse
-	 */
+    /**
+     * @param $orderId
+     * @param array $payload
+     * @return ApiResponse
+     * @throws Exception
+     */
 	public function commit($orderId, $payload = [])
 	{
 		return $this->post($payload, null, $orderId.'/Commit/');
