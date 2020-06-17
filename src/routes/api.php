@@ -5,5 +5,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('admin')->middleware(config('laravel-billwerk.api.middleware'))->group(function() {
     Route::post('/billwerk/webhook', 'WebhookController@handle');
 
-    Route::get('/contract/{contractId}/token', 'ContractController@getSelfServiceToken');
+    // Api routes
+    Route::post('/order/preview', 'Api\OrderController@preview');
+    Route::post('/order', 'Api\OrderController@order');
+    Route::get('/contract/{contractId}/token', 'Api\ContractController@getSelfServiceToken');
 });
