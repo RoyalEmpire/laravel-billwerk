@@ -1,9 +1,7 @@
 <?php
 
-Route::group(['namespace' => '\Lefamed\LaravelBillwerk\Http\Controllers', 'middleware' => ['web']], function () {
-	require __DIR__ . '/routes/web.php';
-});
+use Illuminate\Support\Facades\Route;
 
-Route::group(['namespace' => '\Lefamed\LaravelBillwerk\Http\Controllers', 'middleware' => ['api']], function () {
+Route::group(['namespace' => '\Lefamed\LaravelBillwerk\Http\Controllers'], function () {
 	require __DIR__ . '/routes/api.php';
 });

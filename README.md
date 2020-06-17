@@ -3,7 +3,9 @@
 This package provides a convenient way, to handle payments/subscription with [billwerk.io](https://billwerk.io).
 
 ## Installation
-
+```
+composer require apicore-engineering/laravel-billwerk
+```
 
 
 ## Credits
