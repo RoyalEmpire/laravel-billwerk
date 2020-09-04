@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('admin')->middleware(config('laravel-billwerk.middleware'))->group(function() {
+Route::prefix(config('laravel-billwerk.prefix', 'admin')->middleware(config('laravel-billwerk.middleware'))->group(function() {
     Route::post('/billwerk/webhook', 'WebhookController@handle');
 
     // Api routes
