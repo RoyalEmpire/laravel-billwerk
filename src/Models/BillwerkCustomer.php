@@ -72,6 +72,8 @@ class BillwerkCustomer extends Model
 
 	protected static function boot()
 	{
+                parent::boot();
+		
 		// On Create Event
 		static::creating(function ($values) {
 			if(config('laravel-billwerk.sync') === false) {
