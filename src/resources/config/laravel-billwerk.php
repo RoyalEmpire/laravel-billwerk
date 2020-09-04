@@ -17,4 +17,6 @@ return [
     'sync' => env('BILLWERK_SYNC', true),
 
     'middleware' => ['api'],
+
+    'prefix' => 'admin'
 ];
