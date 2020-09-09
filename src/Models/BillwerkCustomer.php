@@ -67,7 +67,7 @@ class BillwerkCustomer extends Model
 	 */
 	public function contracts()
 	{
-		return $this->hasMany(BillwerkContract::class);
+		return $this->hasMany(BillwerkContract::class, 'customer_id');
 	}
 
 	protected static function boot()
