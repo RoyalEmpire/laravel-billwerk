@@ -55,6 +55,12 @@ class OrderSucceeded implements ShouldQueue
 			$orderClient = new Order();
 			$order = $orderClient->get($this->orderId)->data();
 			$customer = BillwerkCustomer::byBillwerkId($order->CustomerId)->first();
+			
+			if ($customer === null) {
+				Log::error('Customer not found: ' . $order->CustomerId);
+				return;
+			}
+			
 			event(new \Lefamed\LaravelBillwerk\Events\OrderSucceeded($customer, $order));
 		} catch (\Exception $e) {
 			Log::error($e->getMessage());
