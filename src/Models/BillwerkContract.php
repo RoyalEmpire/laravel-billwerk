@@ -16,6 +16,7 @@ class BillwerkContract extends Model
 		'id',
 		'customer_id',
 		'plan_id',
+		'plan_variant_id',
 		'end_date',
 		'reference_code'
 	];

@@ -56,6 +56,7 @@ class ContractCreated implements ShouldQueue
 			\Lefamed\LaravelBillwerk\Models\BillwerkContract::create([
 				'id' => $res->Id,
 				'plan_id' => $res->PlanId,
+                'plan_variant_id' => isset($res->PlanVariantId) ? $res->PlanVariantId : null,
 				'customer_id' => $customer->id,
 				'end_date' => isset($res->EndDate) ? Carbon::parse($res->EndDate) : null,
 				'reference_code' => $res->ReferenceCode

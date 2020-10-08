@@ -22,6 +22,7 @@ class LdCreateContractsTable extends Migration
 
 			$table->unsignedInteger('customer_id');
 			$table->string('plan_id', 24);
+            $table->string('plan_variant_id', 24)->nullable();
             $table->string('reference_code', 9)->unique();
 			$table->dateTime('end_date')->nullable();
 
