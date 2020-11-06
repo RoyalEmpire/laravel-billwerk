@@ -43,7 +43,7 @@ class CustomerChanged implements ShouldQueue
             'company_name' => $customer->CompanyName ?? '',
             'first_name' => $customer->FirstName ?? '',
             'last_name' => $customer->LastName ?? '',
-            'language' => $customer->Language,
+            'language' => $customer->Language ?? null,
             'vat_id' => $customer->VatId ?? '',
             'email_address' => $customer->EmailAddress,
             'notes' => $customer->Notes ?? '',
